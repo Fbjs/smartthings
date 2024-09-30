@@ -5,8 +5,10 @@ CREATE TABLE personas (
     password VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL,
     fecha_nacimiento DATE NOT NULL,
-    usuario VARCHAR(255) DEFAULT NULL
+    usuario VARCHAR(255) DEFAULT NULL,
+    foto_perfil_url VARCHAR(255) DEFAULT NULL
 );
+
 
 ALTER TABLE personas
 ADD correo_validado BOOLEAN DEFAULT 0,
@@ -30,3 +32,6 @@ CREATE TABLE imagenes_personas (
 
 ALTER TABLE imagenes_personas CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE imagenes_personas MODIFY texto_publicacion TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE imagenes_personas ADD COLUMN texto_publicacion VARCHAR(50) 
+CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
