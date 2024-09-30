@@ -49,24 +49,24 @@ const generarYGuardarPersonas = async (cantidad) => {
         const response = await axios.post(
             'https://api.openai.com/v1/chat/completions',
             {
-                model: 'gpt-4',
+                model: 'gpt-3.5-turbo',
                 messages: [
                     {
                         role: 'system',
-                        content: 'Eres un generador de datos ficticios.'
+                        content: 'Eres un generador de datos ficticios. debes devolver solo un array json'
                     },
                     {
                         role: 'user',
                         content: `Genera un array de ${cantidad} personas chilenas ficticias. Cada persona debe incluir:
                         - nombre (nombre completo)
                         - email (con el dominio @neighbour.cl)
-                        - password (contraseña: neig2120)
+                        - password (contraseña: Neig2120*)
                         - descripcion (descripción completa de la persona características físicas, edad, raza, color de ojos, pasatiempos, hobbys, etc)
                         - fecha_nacimiento (en formato año/mes/día.)
-                        - usuario (de instagram, debe ser unico)`
+                        - usuario (debe ser una frase inventada con numero enmedio y unica que sea dificil que se repita)`
                     }
                 ],
-                max_tokens: 1000
+                max_tokens: 2000
             },
             {
                 headers: {
@@ -77,8 +77,18 @@ const generarYGuardarPersonas = async (cantidad) => {
         );
 
         // Obtener y procesar los datos generados
-        const personas = JSON.parse(response.data.choices[0].message.content);
-        console.log('Personas generadas:', personas);
+        console.log('choices:', response.data.choices);
+        const content = response.data.choices[0].message.content.trim();
+        let personas;
+        try {
+            personas = JSON.parse(content);
+        } catch (jsonError) {
+            console.error('Error al parsear JSON:', jsonError.message);
+            console.log('Contenido recibido:', content);  // Para depuración
+            return;  // Salir si el JSON es inválido
+        }
+        console.log('Personas generadas:', personas)
+        ;
         
         console.log(`Guardando las ${cantidad} personas en la base de datos...`);
         guardarPersonasEnBaseDeDatos(personas);
@@ -101,9 +111,42 @@ const guardarPersonasEnBaseDeDatos = (personas) => {
                 console.log('Persona guardada en la base de datos con ID:', result.insertId);
             }
         });
+
+         createEmail(persona); // Llamar a createEmail para cada registro
     });
 
     // Cerrar la interfaz readline y la conexión a la base de datos una vez terminado
     rl.close();
     db.end();
 };
+
+const createEmail = async (persona) => {
+        const token = 'SHOVTLG1Y0ZFPIX7PYCRUVR5WKK66XYN'; // API Token de cPanel
+        const cpanelUrl = 'https://cp013.servidoresph.com:2083/'; // URL de tu cPanel
+
+        const email = persona.email.split('@')[0]; // Obtener la parte del correo antes del @
+        const password = persona.password; // Usar la contraseña del registro
+        const domain = persona.email.split('@')[1]; // Obtener el dominio del correo
+
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${cpanelUrl}/execute/Email/add_pop`,
+                headers: {
+                    Authorization: `cpanel neighbour:${token}`,
+                },
+                params: {
+                    email: email,
+                    password: 'Neig2120*',
+                    domain: domain,
+                    quota: 100, // Tamaño del buzón (en MB)
+                },
+            });
+
+            console.log(response.data);
+
+
+        } catch (error) {
+            console.error('Error creando el correo:', error);
+        }
+    };
