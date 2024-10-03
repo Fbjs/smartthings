@@ -59,11 +59,11 @@ const generarYGuardarPersonas = async (cantidad) => {
                         role: 'user',
                         content: `Genera un array de ${cantidad} personas chilenas ficticias. Cada persona debe incluir:
                         - nombre (nombre completo)
-                        - email (con el dominio @neighbour.cl)
+                        - email (con frases y guin bajo , numeros , y con el dominio @neighbour.cl)
                         - password (contraseña: Neig2120*)
                         - descripcion (descripción completa de la persona características físicas, edad, raza, color de ojos, pasatiempos, hobbys, etc)
                         - fecha_nacimiento (en formato año/mes/día.)
-                        - usuario (debe ser una frase inventada con numero enmedio y unica que sea dificil que se repita)`
+                        - usuario  (debe ser una frase inventada que tenga (guion bajo _ ) y (numeros) en medio de la frase ademas que sea dificil de repetir, max 20 letras)`
                     }
                 ],
                 max_tokens: 2000
