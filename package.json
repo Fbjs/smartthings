@@ -3,6 +3,7 @@
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "imap": "^0.8.19",
+    "inquirer": "^11.1.0",
     "mailparse": "^2.2.2",
     "mailparser": "^3.7.1",
     "mysql": "^2.18.1",

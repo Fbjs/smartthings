@@ -24,42 +24,6 @@ db.connect(err => {
     generarImagenesParaPersonas();
 });
 
-// Función para generar el prompt en español con ChatGPT
-const generarPrompt_ol = async (descripcion) => {
-    try {
-        const response = await axios.post(
-            'https://api.openai.com/v1/chat/completions',
-            {
-                model: 'gpt-3.5-turbo',
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'Eres un asistente de inteligencia artificial que genera prompts para imágenes realistas basadas en la descripción de una persona. El prompt debe ser simple, en español y describir una situación que se alinee con una de las preferencias de la persona.'
-                    },
-                    {
-                        role: 'user',
-                        content: `Genera un prompt en español para una imagen realista de una persona basada en la siguiente descripción: ${descripcion}`
-                    }
-                ],
-                max_tokens: 150
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        // Parseamos el prompt generado
-        const prompt = response.data.choices[0].message.content.trim();
-        return prompt;
-    } catch (error) {
-        console.error('Error al generar el prompt con ChatGPT:', error.response ? error.response.data : error.message);
-        return null;
-    }
-};
-
 const generarPrompt = async (descripcion) => {
     try {
         const response = await axios.post(
