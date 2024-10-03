@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const mysql = require('mysql');
 const path = require('path');
 const axios = require('axios');
-
+const fs = require('fs');
 require('dotenv').config();
 
 // Función de retraso personalizada para reemplazar waitForTimeout
@@ -70,7 +70,7 @@ db.connect(err => {
 // Función para obtener los datos de las personas
 const getPersonas = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM personas WHERE correo_validado = 0', (err, results) => {
+        db.query('SELECT * FROM personas WHERE correo_validado = 1 and instagram_count=1 and instagram_followers=2', (err, results) => {
             if (err) {
                 return reject(err);
             }
@@ -86,14 +86,30 @@ const main = async () => {
     const personas = await getPersonas();
     
     // Iniciar Puppeteer
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
+    //const browser = await puppeteer.launch({ headless: false });
+   // const page = await browser.newPage();
 
     console.log('Navegando a Instagram...');
-    await page.goto('https://www.instagram.com', { waitUntil: 'networkidle2' });
+    //await page.goto('https://www.instagram.com', { waitUntil: 'networkidle2' });
 
     for (let persona of personas) {
         try {
+
+                    // Crear directorio para cada usuario si no existe
+             
+            const browser = await puppeteer.launch({
+                headless: false, // Usar modo no headless para ver la interacción
+                //userDataDir: persona.usuario, // Directorio del perfil del usuario
+                //args: [] // Otros argumentos de configuración
+              });
+            const page = await browser.newPage();
+              // Espera un momento para asegurarte de que todo está listo
+
+            return false;
+
+            await delay(5000); // Espera 2 segundos antes de navegar
+            await page.goto('https://www.instagram.com', { waitUntil: 'networkidle2' });
+
             console.log(`Iniciando sesión para ${persona.nombre}...`);
             
             // Navegar a la página de inicio de sesión

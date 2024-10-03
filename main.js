@@ -134,24 +134,57 @@ function buscarCorreoCodigo(imap, email) {
     });
 
 
-
-
+const URL = "https://www.booking.com/";
+const PROXY_USERNAME = "brd-customer-hl_703b2df4-zone-scraping_browser1";
+const PROXY_PASSWORD = "l78a547agc8o";
+const PROXY_HOST = "brd.superproxy.io";
+const BROWSER_WS = "wss://brd-customer-hl_703b2df4-zone-scraping_browser1:l78a547agc8o@brd.superproxy.io:9222";
+const PROXY_PORT = "9222";
+const CHROME_EXECUTABLE_PATH = '/usr/bin/google-chrome'; 
   // Lanzar el navegador
   async function bot(data) {
 
-          //codigo de pupper
-      const browser = await puppeteer.launch({ 
-        headless: false,
-        //args: ['--proxy-server=74.119.147.209:4145'] 
-      }); // headless: false para ver el navegador
+
+      // Proxy details
+      const proxy = {
+        host: '181.82.232.177',
+        port: '1080',
+        auth: {
+          username: 'tl-f5dfbb54167aad5f0f7c66db962d4b0864bd1dd426cb042de664281d7f6b637c-country-XX-session-###',
+          password: '28a9l1x7m7hc'
+        }
+      };
+
+
+      //codigo de pupper
+      const browser = await puppeteer.connect({
+    browserURL: 'http://localhost:9222',  // URL de Chrome en Android
+  });
+
       const page = await browser.newPage();
-      
+      // Authenticate proxy if credentials are required
+      /*
+      await page.authenticate({
+        username: proxy.auth.username,
+        password: proxy.auth.password
+      });
+      */
+
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Espera 3 segundos
+
+      // Navegar a la URL deseada
+              console.log('goto instagram');
+      await page.goto('https://www.instagram.com', { waitUntil: 'networkidle2', timeout: 50000 });
+
       // Ir a la página de registro de Instagram
       //await page.goto('https://www.instagram.com/accounts/emailsignup', { waitUntil: 'networkidle2' });
-      await page.goto('https://www.instagram.com', { waitUntil: 'networkidle2' });
       
-      await new Promise(resolve => setTimeout(resolve, 3000)); // Espera 3 segundos
+
       
+      //boton para ir a registrar desde pagina inicio 
+
+      await page.waitForSelector('span._ap3a._aaco._aacw._aad0._aad7', { timeout: 10000 });
+
       await page.evaluate(() => {
           // Buscar todos los spans con las clases mencionadas
           let spans = Array.from(document.querySelectorAll('span._ap3a._aaco._aacw._aad0._aad7'));
@@ -168,6 +201,9 @@ function buscarCorreoCodigo(imap, email) {
               console.log('No se encontró un enlace con el botón "Regístrate".');
           }
       });
+        
+
+
 
       // Esperar a que el formulario cargue y seleccionar los campos
       await page.waitForSelector('input[name="emailOrPhone"]');
@@ -318,6 +354,8 @@ function buscarCorreoCodigo(imap, email) {
           // Cerrar la conexión cuando ya no sea necesaria
           db.end();
 
+          return false;
+          
           // Marcar todos los checkboxes
           await page.evaluate(() => {
               let checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));

@@ -7,6 +7,7 @@
     "mailparser": "^3.7.1",
     "mysql": "^2.18.1",
     "puppeteer": "^23.4.1",
+    "puppeteer-core": "^23.4.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }

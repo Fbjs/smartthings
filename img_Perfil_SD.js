@@ -116,7 +116,7 @@ const generateProfileImage = async (prompt, nombre) => {
 // Función principal para obtener perfiles, generar imágenes y almacenar en la base de datos
 const generarFotosPerfil = async () => {
     // Consulta para obtener las descripciones y nombres
-    db.query('SELECT id, nombre, descripcion, usuario FROM personas', async (err, perfiles) => {
+    db.query('SELECT id, nombre, descripcion, usuario FROM personas where foto_perfil_url is null', async (err, perfiles) => {
         if (err) {
             console.error('Error al obtener perfiles:', err);
             return;
