@@ -340,7 +340,7 @@ const main = async () => {
                 //console.log('No se encontraron opciones para "Guardar información" o "Ahora no".');
             }
 
-            /*/ Navegar a la página del perfil del usuario
+            // Navegar a la página del perfil del usuario
             console.log(`Navegando al perfil de ${persona.usuario}...`);
             await page.goto(`https://www.instagram.com/${persona.usuario}/`, { waitUntil: 'networkidle2' });
 
@@ -391,72 +391,7 @@ const main = async () => {
                 if (enviarButton) {
                     enviarButton.click();
                 }
-            });*/
-            console.log(`Biografía actualizada para ${persona.nombre}`);
-            await page.goto(`https://www.instagram.com/${persona.usuario}/`, { waitUntil: 'networkidle2' });
-
-            // Esperar a que el botón de "Nueva publicación" esté disponible
-            await page.waitForSelector('svg[aria-label="Nueva publicación"]');
-            await delay(getRandomInt(500, 1500));
-
-            // Hacer clic en el botón "Nueva publicación"
-            await page.evaluate(() => {
-                const newPostButton = document.querySelector('svg[aria-label="New post"]');
-                if (newPostButton) {
-                    newPostButton.parentElement.click();  // Hacemos clic en el elemento padre del SVG
-                }
             });
-            await delay(getRandomInt(500, 1500));
-            // Esperar a que el botón de "Seleccionar de la computadora" esté disponible
-            await page.waitForSelector('button._acan._acap._acas._aj1-._ap30');
-
-            // Hacer clic en el botón para seleccionar un archivo
-            //await page.click('button._acan._acap._acas._aj1-._ap30');
-
-            //cargar 1 ublicaciones
-
-            // Generar el prompt en español con ChatGPT
-            const prompt = await generarPrompt(persona.descripcion);
-            if (!prompt) {
-                console.error('Error al generar el prompt con ChatGPT');
-                continue;
-            }
-
-            // Generar el texto de la publicación en español relacionado con el prompt
-            const textoPublicacion = await generarTextoPublicacion(prompt);
-            if (!textoPublicacion) {
-                console.error('Error al generar el texto de la publicación con ChatGPT');
-                continue;
-            }
-
-            console.log('Generando imagen con prompt:', prompt);
-
-            // Generar imagen desde el prompt usando la función `generateImage`
-            const imagenPath = await generateImage(prompt, persona.usuario);
-            await delay(getRandomInt(500, 1500));
-
-
-            // Verificar si el archivo de la imagen existe
-            if (fs.existsSync(imagenPath)) {
-                console.log("La imagen existe.");
-            } else {
-                console.log("La imagen no se encuentra en la ruta especificada.");
-                return; // Detener el flujo si la imagen no se encuentra
-            }
-
-            // Esperar el campo de input file y subir la imagen
-            await page.waitForSelector('input[type="file"]', { timeout: 60000 });
-
-
-            dragAndDrop(page, imagenPath);
-            //const inputFile = await page.$('input[type="file"]');
-
-            /*/ Simular movimientos del mouse
-            await page.mouse.move(100, 200);
-            await page.mouse.move(200, 300);
-            await delay(getRandomInt(500, 1500));
-
-            await inputFile.uploadFile('/home/fbjs/Descargas/AsesoriaDefendaDeudas.jpeg');*/
 
             // Dar tiempo para que se procese la imagen subida
             await delay(5000);
@@ -472,24 +407,6 @@ const main = async () => {
             } else {
                 console.log('Imagen cargada correctamente.');
             }
-
-            // Subir la imagen
-            /*await inputFile.uploadFile(imagePath);
-
-            const errorMsg = await page.evaluate(() => {
-                const error = document.querySelector('.error-message-selector'); // Cambia esto por la clase real de error
-                return error ? error.innerText : null;
-            });
-
-            if (errorMsg) {
-                console.log('Error al subir la imagen:', errorMsg);
-            } else {
-                console.log('Imagen cargada correctamente.');
-            }
-
-            // Continuar con la publicación
-            await page.waitForSelector('button[type="submit"]');
-            await page.click('button[type="submit"]');*/
 
             console.log('Imagen subida correctamente.');
 
